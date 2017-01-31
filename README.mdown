@@ -1,0 +1,49 @@
+# Cert Easy
+
+
+## Usage
+```
+usage: cert_easy [-h] {display,verify} ...
+
+positional arguments:
+  {display,verify}  commands
+    display         Display certificate.
+    verify          verifiy couple CA, CERTIFICATE
+
+optional arguments:
+  -h, --help        show this help message and exit
+
+
+# display
+usage: cert_easy display [-h] [--input INPUT] [--brief]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --input INPUT, -i INPUT
+                        Certificate path.
+  --brief, -b           Enable brief display.
+
+
+# verify
+usage: cert_easy verify [-h] [--input INPUT] [--ca CA]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --input INPUT, -i INPUT
+                        Certificate path.
+  --ca CA               CA path.
+```
+
+## Examples
+
+```bash
+# Generate certificate
+mkdir ssl_perso/
+bash ../gen_certificate.sh
+
+# Display your certificate
+python cert_easy display --input ssl/server.pem
+
+# Verify couple ca
+python cert_easy.py verify --input ssl/server.pem --ca ssl/ca.pem
+```
