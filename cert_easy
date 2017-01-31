@@ -5,9 +5,9 @@
 # Standard library imports
 from __future__ import print_function
 from argparse import ArgumentParser
+from sys import argv
 from OpenSSL.crypto import load_certificate, FILETYPE_PEM
 from OpenSSL.crypto import X509Store, X509StoreContext, X509StoreContextError
-from sys import argv
 
 COLORS = {
     'red': '\033[1;31m',
