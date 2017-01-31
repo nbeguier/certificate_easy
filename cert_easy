@@ -1,0 +1,89 @@
+#!/usr/bin/env python
+#-*- coding: utf-8 -*-
+""" Easy use of certificate """
+
+# Standard library imports
+from __future__ import print_function
+from argparse import ArgumentParser
+from OpenSSL.crypto import load_certificate, FILETYPE_PEM
+from OpenSSL.crypto import X509Store, X509StoreContext, X509StoreContextError
+from sys import argv
+
+COLORS = {
+    'red': '\033[1;31m',
+    'green': '\033[1;32m',
+    'yellow': '\033[1;33m',
+    'purple': '\033[1;34m',
+    'pink': '\033[1;35m',
+    'light_blue': '\033[1;36m',
+    'white': '\033[m',
+    'native': '\033[m',
+    'bold': '\033[1m'
+}
+
+def display(cert_path, brief=False):
+    """ Display certificate """
+    st_cert = open(cert_path, 'rt').read()
+    cert = load_certificate(FILETYPE_PEM, st_cert)
+
+    print('%sCommon Name:%s %s%s' % (COLORS['bold'], COLORS['green'], cert.get_subject().CN,\
+                                     COLORS['native']))
+    print('%sSubject:%s' % (COLORS['bold'], COLORS['native']))
+    for subject in cert.get_subject().get_components():
+        print('    %s%s:%s %s' % (COLORS['bold'], subject[0], COLORS['native'], subject[1]))
+
+    print('%sIssuer:%s %s%s' % (COLORS['bold'], COLORS['green'], cert.get_issuer().CN,\
+                                COLORS['native']))
+    print('%sValidity:%s' % (COLORS['bold'], COLORS['native']))
+    print('    %sNot Before:%s %s' % (COLORS['bold'], COLORS['native'], cert.get_notBefore()))
+    print('    %sNot After:%s %s' % (COLORS['bold'], COLORS['native'], cert.get_notAfter()))
+    if cert.has_expired():
+        print('    %sCertificate expired%s' % (COLORS['red'], COLORS['native']))
+
+    if not brief:
+        print('%sSignature Algorithm:%s %s' % (COLORS['bold'], COLORS['native'],\
+                                               cert.get_signature_algorithm()))
+        print('%sX509v3 extensions:%s' % (COLORS['bold'], COLORS['native']))
+        for ext_id in range(cert.get_extension_count()):
+            print('    %s%s:%s %s' % (COLORS['bold'], cert.get_extension(ext_id).get_short_name(),\
+                                      COLORS['native'], cert.get_extension(ext_id).__str__()))
+
+def verify(cert_path, ca_path):
+    """ Verify a couple of certificate and CA """
+    cert = load_certificate(FILETYPE_PEM, open(cert_path, 'rt').read())
+    ca_cert = load_certificate(FILETYPE_PEM, open(ca_path, 'rt').read())
+    store = X509Store()
+    store.add_cert(ca_cert)
+    store_ctx = X509StoreContext(store, cert)
+    try:
+        if store_ctx.verify_certificate() is None:
+            print('%sVerification successful%s' % (COLORS['green'], COLORS['native']))
+    except X509StoreContextError as error:
+        print('%sVerification error: "%s"%s' % (COLORS['red'], error.message[2], COLORS['native']))
+
+if __name__ == '__main__':
+    PARSER = ArgumentParser()
+
+    SUBPARSERS = PARSER.add_subparsers(help='commands')
+
+    # A display command
+    DISPLAY_PARSER = SUBPARSERS.add_parser('display', help='Display certificate.')
+    DISPLAY_PARSER.add_argument('--input', '-i', action='store',
+                                help='Certificate path.')
+
+    DISPLAY_PARSER.add_argument('--brief', '-b', action='store_true',
+                                default=False, help='Enable brief display.')
+
+    # An verify command
+    VERIFY_PARSER = SUBPARSERS.add_parser('verify', help='verifiy couple CA, CERTIFICATE')
+    VERIFY_PARSER.add_argument('--input', '-i', action='store', help='Certificate path.')
+    VERIFY_PARSER.add_argument('--ca', action='store', help='CA path.')
+
+    ARGS = PARSER.parse_args()
+
+    if argv[1] == 'display':
+        if ARGS.input is not None:
+            display(ARGS.input, brief=ARGS.brief)
+    elif argv[1] == 'verify':
+        if ARGS.input is not None and ARGS.ca is not None:
+            verify(ARGS.input, ARGS.ca)
