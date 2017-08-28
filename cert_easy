@@ -5,6 +5,7 @@
 # Standard library imports
 from __future__ import print_function
 from argparse import ArgumentParser
+from ssl import get_server_certificate
 from sys import argv
 from OpenSSL.crypto import load_certificate, FILETYPE_PEM
 from OpenSSL.crypto import X509Store, X509StoreContext, X509StoreContextError
@@ -21,9 +22,12 @@ COLORS = {
     'bold': '\033[1m'
 }
 
-def display(cert_path, brief=False):
+def display(cert_path, url=False, brief=False):
     """ Display certificate """
-    st_cert = open(cert_path, 'rt').read()
+    if url:
+        st_cert = get_server_certificate((cert_path, 443))
+    else:
+        st_cert = open(cert_path, 'rt').read()
     cert = load_certificate(FILETYPE_PEM, st_cert)
 
     print('%sCommon Name:%s %s%s' % (COLORS['bold'], COLORS['green'], cert.get_subject().CN,\
@@ -48,10 +52,17 @@ def display(cert_path, brief=False):
             print('    %s%s:%s %s' % (COLORS['bold'], cert.get_extension(ext_id).get_short_name(),\
                                       COLORS['native'], cert.get_extension(ext_id).__str__()))
 
-def verify(cert_path, ca_path):
+from pdb import set_trace as st
+
+def verify(cert_path, ca_path, url=False):
     """ Verify a couple of certificate and CA """
-    cert = load_certificate(FILETYPE_PEM, open(cert_path, 'rt').read())
-    ca_cert = load_certificate(FILETYPE_PEM, open(ca_path, 'rt').read())
+    if url:
+        st_cert = get_server_certificate((cert_path, 443))
+    else:
+        st_cert = open(cert_path, 'rt').read()
+    st_ca = open(ca_path, 'rt').read()
+    cert = load_certificate(FILETYPE_PEM, st_cert)
+    ca_cert = load_certificate(FILETYPE_PEM, st_ca)
     store = X509Store()
     store.add_cert(ca_cert)
     store_ctx = X509StoreContext(store, cert)
@@ -70,7 +81,8 @@ if __name__ == '__main__':
     DISPLAY_PARSER = SUBPARSERS.add_parser('display', help='Display certificate.')
     DISPLAY_PARSER.add_argument('--input', '-i', action='store',
                                 help='Certificate path.')
-
+    DISPLAY_PARSER.add_argument('--input-url', '-u', action='store',
+                                help='Certificate URL.')
     DISPLAY_PARSER.add_argument('--brief', '-b', action='store_true',
                                 default=False, help='Enable brief display.')
 
@@ -78,12 +90,22 @@ if __name__ == '__main__':
     VERIFY_PARSER = SUBPARSERS.add_parser('verify', help='verifiy couple CA, CERTIFICATE')
     VERIFY_PARSER.add_argument('--input', '-i', action='store', help='Certificate path.')
     VERIFY_PARSER.add_argument('--ca', action='store', help='CA path.')
+    VERIFY_PARSER.add_argument('--input-url', '-u', action='store',
+                                help='Certificate URL.')
 
     ARGS = PARSER.parse_args()
 
     if argv[1] == 'display':
         if ARGS.input is not None:
             display(ARGS.input, brief=ARGS.brief)
+        elif ARGS.input_url is not None:
+            display(ARGS.input_url, url=True, brief=ARGS.brief)
+        else:
+            DISPLAY_PARSER.print_usage()
     elif argv[1] == 'verify':
         if ARGS.input is not None and ARGS.ca is not None:
             verify(ARGS.input, ARGS.ca)
+        elif ARGS.input_url is not None and ARGS.ca is not None:
+            verify(ARGS.input_url, ARGS.ca, url=True)
+        else:
+            VERIFY_PARSER.print_usage()
