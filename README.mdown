@@ -1,7 +1,20 @@
 # Cert Easy
 
+## Prerequisites
+
+```
+apt-get install gnutls-bin
+```
+
 
 ## Usage
+```
+gen_ca [--cn <common name>] [-o <o>] [--validity <validity>] [--output <output directory>]
+
+gen_certificate [--cn <common name>] [-o <o>] [--validity <validity>] [--output <output directory>]
+```
+
+
 ```
 usage: cert_easy [-h] {display,verify} ...
 
@@ -38,12 +51,17 @@ optional arguments:
 
 ```bash
 # Generate certificate
-mkdir ssl_perso/
-bash ../gen_certificate.sh
+mkdir ssl_perso
+
+# Generating CA
+bash gen_ca.sh --output ssl_perso/ --cn "My private CA"
+
+# Generating Certificate
+bash gen_certificate.sh --output ssl_perso/ --cn "My private server"
 
 # Display your certificate
-python cert_easy display --input ssl/server.pem
+python cert_easy display --input ssl_perso/server.pem
 
 # Verify couple ca
-python cert_easy.py verify --input ssl/server.pem --ca ssl/ca.pem
+python cert_easy verify --input ssl_perso/server.pem --ca ssl_perso/ca.pem
 ```
