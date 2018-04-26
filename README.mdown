@@ -30,28 +30,27 @@ optional arguments:
 
 
 # display
-usage: cert_easy display [-h] [--input INPUT] [--input-url INPUT_URL]
+usage: cert_easy display [-h] [--input INPUT] [--input-fqdn INPUT_FQDN]
                          [--brief]
 
 optional arguments:
   -h, --help            show this help message and exit
   --input INPUT, -i INPUT
                         Certificate path.
-  --input-url INPUT_URL, -u INPUT_URL
-                        Certificate URL.
+  --input-fqdn INPUT_FQDN, -u INPUT_FQDN
+                        Certificate FQDN.
   --brief, -b           Enable brief display.
 
-
 # verify
-usage: cert_easy verify [-h] [--input INPUT] [--ca CA] [--input-url INPUT_URL]
+usage: cert_easy verify [-h] [--input INPUT] [--ca CA] [--input-fqdn INPUT_FQDN]
 
 optional arguments:
   -h, --help            show this help message and exit
   --input INPUT, -i INPUT
                         Certificate path.
   --ca CA               CA path.
-  --input-url INPUT_URL, -u INPUT_URL
-                        Certificate URL.
+  --input-fqdn INPUT_FQDN, -f INPUT_FQDN
+                        Certificate FQDN.
 ```
 
 ## Examples
@@ -79,7 +78,7 @@ python cert_easy verify --input ssl_perso/server.pem --ca ssl_perso/ca.pem
 
 ```bash
 # Display server certificate
-python cert_easy display --input-url github.com
+python cert_easy display --input-fqdn github.com
 
 ```
 
@@ -88,7 +87,7 @@ python cert_easy display --input-url github.com
 
 ```bash
 # Verify certificate with private ca (should fail)
-python cert_easy verify --input-url github.com --ca ssl/ca.pem
+python cert_easy verify --input-fqdn github.com --ca ssl/ca.pem
 
 # Download github ca
 # Extract it in the dump
