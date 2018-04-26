@@ -5,8 +5,10 @@
 # Standard library imports
 from __future__ import print_function
 from argparse import ArgumentParser
-from ssl import get_server_certificate
 from sys import argv
+
+# Third party library imports
+from ssl import get_server_certificate
 from OpenSSL.crypto import load_certificate, FILETYPE_PEM
 from OpenSSL.crypto import X509Store, X509StoreContext, X509StoreContextError
 
@@ -52,8 +54,6 @@ def display(cert_path, url=False, brief=False):
             print('    %s%s:%s %s' % (COLORS['bold'], cert.get_extension(ext_id).get_short_name(),\
                                       COLORS['native'], cert.get_extension(ext_id).__str__()))
 
-from pdb import set_trace as st
-
 def verify(cert_path, ca_path, url=False):
     """ Verify a couple of certificate and CA """
     if url:
@@ -91,7 +91,7 @@ if __name__ == '__main__':
     VERIFY_PARSER.add_argument('--input', '-i', action='store', help='Certificate path.')
     VERIFY_PARSER.add_argument('--ca', action='store', help='CA path.')
     VERIFY_PARSER.add_argument('--input-url', '-u', action='store',
-                                help='Certificate URL.')
+                               help='Certificate URL.')
 
     ARGS = PARSER.parse_args()
 
