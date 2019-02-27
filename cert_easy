@@ -24,10 +24,10 @@ COLORS = {
     'bold': '\033[1m'
 }
 
-def display(cert_path, fqdn=False, brief=False):
+def display(cert_path, fqdn=False, brief=False, port=443):
     """ Display certificate """
     if fqdn:
-        st_cert = get_server_certificate((cert_path, 443))
+        st_cert = get_server_certificate((cert_path, port))
     else:
         st_cert = open(cert_path, 'rt').read()
     cert = load_certificate(FILETYPE_PEM, st_cert)
@@ -54,10 +54,10 @@ def display(cert_path, fqdn=False, brief=False):
             print('    %s%s:%s %s' % (COLORS['bold'], cert.get_extension(ext_id).get_short_name(),\
                                       COLORS['native'], cert.get_extension(ext_id).__str__()))
 
-def verify(cert_path, ca_path, fqdn=False):
+def verify(cert_path, ca_path, fqdn=False, port=443):
     """ Verify a couple of certificate and CA """
     if fqdn:
-        st_cert = get_server_certificate((cert_path, 443))
+        st_cert = get_server_certificate((cert_path, port))
     else:
         st_cert = open(cert_path, 'rt').read()
     st_ca = open(ca_path, 'rt').read()
@@ -85,6 +85,8 @@ if __name__ == '__main__':
                                 help='Certificate FQDN.')
     DISPLAY_PARSER.add_argument('--brief', '-b', action='store_true',
                                 default=False, help='Enable brief display.')
+    DISPLAY_PARSER.add_argument('--port', '-p', action='store',
+                                default=443, help='Change HTTPs port.')
 
     # An verify command
     VERIFY_PARSER = SUBPARSERS.add_parser('verify', help='verifiy couple CA, CERTIFICATE')
@@ -92,6 +94,9 @@ if __name__ == '__main__':
     VERIFY_PARSER.add_argument('--ca', action='store', help='CA path.')
     VERIFY_PARSER.add_argument('--input-fqdn', '-f', action='store',
                                help='Certificate FQDN.')
+    VERIFY_PARSER.add_argument('--port', '-p', action='store', help='Change HTTPs port.',
+                               default=443)
+
 
     ARGS = PARSER.parse_args()
 
@@ -99,13 +104,13 @@ if __name__ == '__main__':
         if ARGS.input is not None:
             display(ARGS.input, brief=ARGS.brief)
         elif ARGS.input_fqdn is not None:
-            display(ARGS.input_fqdn, fqdn=True, brief=ARGS.brief)
+            display(ARGS.input_fqdn, fqdn=True, brief=ARGS.brief, port=ARGS.port)
         else:
             DISPLAY_PARSER.print_usage()
     elif argv[1] == 'verify':
         if ARGS.input is not None and ARGS.ca is not None:
-            verify(ARGS.input, ARGS.ca)
+            verify(ARGS.input, ARGS.ca, port=ARGS.port)
         elif ARGS.input_fqdn is not None and ARGS.ca is not None:
-            verify(ARGS.input_fqdn, ARGS.ca, fqdn=True)
+            verify(ARGS.input_fqdn, ARGS.ca, fqdn=True, port=ARGS.port)
         else:
             VERIFY_PARSER.print_usage()

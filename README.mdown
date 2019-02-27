@@ -40,6 +40,7 @@ optional arguments:
   --input-fqdn INPUT_FQDN, -u INPUT_FQDN
                         Certificate FQDN.
   --brief, -b           Enable brief display.
+  --port PORT, -p PORT  Change HTTPs port.
 
 # verify
 usage: cert_easy verify [-h] [--input INPUT] [--ca CA] [--input-fqdn INPUT_FQDN]
@@ -51,6 +52,7 @@ optional arguments:
   --ca CA               CA path.
   --input-fqdn INPUT_FQDN, -f INPUT_FQDN
                         Certificate FQDN.
+  --port PORT, -p PORT  Change HTTPs port.
 ```
 
 ## Examples
