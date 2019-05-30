@@ -3,7 +3,6 @@
 """ Easy use of certificate """
 
 # Standard library imports
-from __future__ import print_function
 from argparse import ArgumentParser
 from sys import argv
 
