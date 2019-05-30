@@ -2,23 +2,26 @@
 
 ## Prerequisites
 
-```
-apt-get install gnutls-bin
-```
+### Debian/Ubuntu
 
+```
+apt install gnutls-bin python3-pip
+
+pip3 install -r requirements.txt
+```
 
 ## Usage
 ```
-gen_ca [--cn <common name>] [-o <o>] [--validity <validity>] [--output <output directory>]
+$ bash gen_ca.sh [--cn <common name>] [-o <o>] [--validity <validity>] [--output <output directory>]
 ```
 
 ```
-gen_certificate [--cn <common name>] [-o <o>] [--validity <validity>] [--output <output directory>]
+$ bash gen_certificate.sh [--cn <common name>] [-o <o>] [--validity <validity>] [--output <output directory>]
 ```
 
 
 ```
-usage: cert_easy [-h] {display,verify} ...
+$ python cert_easy [-h] {display,verify} ...
 
 positional arguments:
   {display,verify}  commands
@@ -70,17 +73,17 @@ bash gen_ca.sh --output ssl_perso/ --cn "My private CA"
 bash gen_certificate.sh --output ssl_perso/ --cn "My private server"
 
 # Display your certificate
-python cert_easy display --input ssl_perso/server.pem
+python3 cert_easy display --input ssl_perso/server.pem
 
 # Verify couple ca
-python cert_easy verify --input ssl_perso/server.pem --ca ssl_perso/ca.pem
+python3 cert_easy verify --input ssl_perso/server.pem --ca ssl_perso/ca.pem
 ```
 
 ### Display server certificate
 
 ```bash
 # Display server certificate
-python cert_easy display --input-fqdn github.com
+python3 cert_easy display --input-fqdn github.com
 
 ```
 

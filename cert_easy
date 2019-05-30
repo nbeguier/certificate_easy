@@ -100,7 +100,9 @@ if __name__ == '__main__':
 
     ARGS = PARSER.parse_args()
 
-    if argv[1] == 'display':
+    if len(argv) < 2:
+        PARSER.print_usage()
+    elif argv[1] == 'display':
         if ARGS.input is not None:
             display(ARGS.input, brief=ARGS.brief)
         elif ARGS.input_fqdn is not None:
