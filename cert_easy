@@ -13,7 +13,7 @@ from OpenSSL.crypto import load_certificate, FILETYPE_PEM
 from OpenSSL.crypto import X509Store, X509StoreContext, X509StoreContextError
 
 # Debug
-# from pdb import set_trace as st
+from pdb import set_trace as st
 
 COLORS = {
     'red': '\033[1;31m',
@@ -27,7 +27,15 @@ COLORS = {
     'bold': '\033[1m'
 }
 
-def display(cert_path, fqdn=False, brief=False, port=443):
+def color_message(message, color_name, bold=False):
+    """ Print in a specific color """
+    if bold:
+        color = "{bold}{color}".format(bold=COLORS['bold'], color=COLORS[color_name])
+    else:
+        color = COLORS[color_name]
+    return "{color}{message}{reset_color}".format(color=color, message=message, reset_color=COLORS['native'])
+
+def display(cert_path, fqdn=False, extensions=False, port=443):
     """ Display certificate """
     if fqdn:
         st_cert = get_server_certificate((cert_path, port))
@@ -35,35 +43,32 @@ def display(cert_path, fqdn=False, brief=False, port=443):
         st_cert = open(cert_path, 'rt').read()
     cert = load_certificate(FILETYPE_PEM, st_cert)
 
-    print('%sCommon Name:%s %s%s' % (COLORS['bold'], COLORS['green'], cert.get_subject().CN,\
-                                     COLORS['native']))
-    print('%sSubject:%s' % (COLORS['bold'], COLORS['native']))
+    print(color_message("Common Name: ", "green", bold=True) + cert.get_subject().CN)
+    print(color_message("Subject: ", "green", bold=True))
     for subject in cert.get_subject().get_components():
-        print('    %s%s:%s %s' % (COLORS['bold'], subject[0], COLORS['native'], subject[1]))
+        print(color_message("    {}: ".format(subject[0].decode("utf-8")), "bold") + subject[1].decode("utf-8"))
 
-    print('%sIssuer:%s %s%s' % (COLORS['bold'], COLORS['green'], cert.get_issuer().CN,\
-                                COLORS['native']))
-    print('%sValidity:%s' % (COLORS['bold'], COLORS['native']))
-    print('    %sNot Before:%s %s' % (COLORS['bold'], COLORS['native'], cert.get_notBefore()))
-    print('    %sNot After:%s %s' % (COLORS['bold'], COLORS['native'], cert.get_notAfter()))
+    print(color_message("Issuer: ", "green", bold=True) + cert.get_issuer().CN)
+    print(color_message("Validity: ", "bold"))
+    print(color_message("    Not Before: ", "bold") + cert.get_notBefore().decode("utf-8"))
+    print(color_message("    Not After: ", "bold") + cert.get_notAfter().decode("utf-8"))
     if cert.has_expired():
-        print('    %sCertificate expired%s' % (COLORS['red'], COLORS['native']))
+        print(color_message("Certificate expired", "red"))
 
-    if not brief:
-        print('%sSignature Algorithm:%s %s' % (COLORS['bold'], COLORS['native'],\
-                                               cert.get_signature_algorithm()))
-        print('%sX509v3 extensions:%s' % (COLORS['bold'], COLORS['native']))
+    if extensions:
+        print(color_message("Signature Algorithm: ", "bold") + cert.get_signature_algorithm().decode("utf-8"))
+        print(color_message("X509v3 extensions: ", "bold"))
         for ext_id in range(cert.get_extension_count()):
-            print('    %s%s:%s %s' % (COLORS['bold'], cert.get_extension(ext_id).get_short_name(),\
-                                      COLORS['native'], cert.get_extension(ext_id).__str__()))
+            print(color_message("    {}: ".format(cert.get_extension(ext_id).get_short_name().decode("utf-8")), "bold") +
+                cert.get_extension(ext_id).__str__())
 
 def verify(cert_path, ca_path, fqdn=False, port=443):
     """ Verify a couple of certificate and CA """
     if fqdn:
         st_cert = get_server_certificate((cert_path, port))
     else:
-        st_cert = open(cert_path, 'rt').read()
-    st_ca = open(ca_path, 'rt').read()
+        st_cert = open(cert_path, "rt").read()
+    st_ca = open(ca_path, "rt").read()
     cert = load_certificate(FILETYPE_PEM, st_cert)
     ca_cert = load_certificate(FILETYPE_PEM, st_ca)
     store = X509Store()
@@ -71,33 +76,33 @@ def verify(cert_path, ca_path, fqdn=False, port=443):
     store_ctx = X509StoreContext(store, cert)
     try:
         if store_ctx.verify_certificate() is None:
-            print('%sVerification successful%s' % (COLORS['green'], COLORS['native']))
+            print(color_message("Verification successful !", "green", bold=True))
     except X509StoreContextError as error:
-        print('%sVerification error: "%s"%s' % (COLORS['red'], error, COLORS['native']))
+        print(color_message("Verification error: ", "red", bold=True) + str(error))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     PARSER = ArgumentParser()
 
-    SUBPARSERS = PARSER.add_subparsers(help='commands')
+    SUBPARSERS = PARSER.add_subparsers(help="commands")
 
     # A display command
-    DISPLAY_PARSER = SUBPARSERS.add_parser('display', help='Display certificate.')
-    DISPLAY_PARSER.add_argument('--input', '-i', action='store',
-                                help='Certificate path.')
-    DISPLAY_PARSER.add_argument('--input-fqdn', '-u', action='store',
-                                help='Certificate FQDN.')
-    DISPLAY_PARSER.add_argument('--brief', '-b', action='store_true',
-                                default=False, help='Enable brief display.')
-    DISPLAY_PARSER.add_argument('--port', '-p', action='store',
-                                default=443, help='Change HTTPs port.')
+    DISPLAY_PARSER = SUBPARSERS.add_parser("display", help="Display certificate.")
+    DISPLAY_PARSER.add_argument("--input", "-i", action="store",
+                                help="Certificate path.")
+    DISPLAY_PARSER.add_argument("--input-fqdn", "-u", action="store",
+                                help="Certificate FQDN.")
+    DISPLAY_PARSER.add_argument("--extensions", "-e", action="store_true",
+                                default=False, help="Display extensions and signature.")
+    DISPLAY_PARSER.add_argument("--port", "-p", action="store",
+                                default=443, help="Change HTTPs port.")
 
     # An verify command
-    VERIFY_PARSER = SUBPARSERS.add_parser('verify', help='verifiy couple CA, CERTIFICATE')
-    VERIFY_PARSER.add_argument('--input', '-i', action='store', help='Certificate path.')
-    VERIFY_PARSER.add_argument('--ca', action='store', help='CA path.')
-    VERIFY_PARSER.add_argument('--input-fqdn', '-f', action='store',
-                               help='Certificate FQDN.')
-    VERIFY_PARSER.add_argument('--port', '-p', action='store', help='Change HTTPs port.',
+    VERIFY_PARSER = SUBPARSERS.add_parser("verify", help="verifiy couple CA, CERTIFICATE")
+    VERIFY_PARSER.add_argument("--input", "-i", action="store", help="Certificate path.")
+    VERIFY_PARSER.add_argument("--ca", action="store", help="CA path.")
+    VERIFY_PARSER.add_argument("--input-fqdn", "-f", action="store",
+                               help="Certificate FQDN.")
+    VERIFY_PARSER.add_argument("--port", "-p", action="store", help="Change HTTPs port.",
                                default=443)
 
 
@@ -105,14 +110,14 @@ if __name__ == '__main__':
 
     if len(argv) < 2:
         PARSER.print_usage()
-    elif argv[1] == 'display':
+    elif argv[1] == "display":
         if ARGS.input is not None:
-            display(ARGS.input, brief=ARGS.brief)
+            display(ARGS.input, extensions=ARGS.extensions)
         elif ARGS.input_fqdn is not None:
-            display(ARGS.input_fqdn, fqdn=True, brief=ARGS.brief, port=ARGS.port)
+            display(ARGS.input_fqdn, fqdn=True, extensions=ARGS.extensions, port=ARGS.port)
         else:
             DISPLAY_PARSER.print_usage()
-    elif argv[1] == 'verify':
+    elif argv[1] == "verify":
         if ARGS.input is not None and ARGS.ca is not None:
             verify(ARGS.input, ARGS.ca, port=ARGS.port)
         elif ARGS.input_fqdn is not None and ARGS.ca is not None:
