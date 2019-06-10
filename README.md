@@ -1,6 +1,6 @@
 # Cert Easy
 
-[![Build Status](https://travis-ci.org/nbeguier/certificate_easy.svg?branch=master)](https://travis-ci.org/nbeguier/certificate_easy) [![Python 3.2|3.7](https://img.shields.io/badge/python-3.2|3.7-green.svg)](https://www.python.org/) [![License](https://img.shields.io/badge/Licence-Apache%202.0-blue.svg)](https://github.com/nbeguier/certificate_easy/blob/master/LICENSE)
+[![Build Status](https://travis-ci.org/nbeguier/certificate_easy.svg?branch=master)](https://travis-ci.org/nbeguier/certificate_easy) [![Python 3.2|3.7](https://img.shields.io/badge/python-3.4|3.7-green.svg)](https://www.python.org/) [![License](https://img.shields.io/badge/Licence-Apache%202.0-blue.svg)](https://github.com/nbeguier/certificate_easy/blob/master/LICENSE)
 
 ## Prerequisites
 
@@ -63,7 +63,7 @@ optional arguments:
 
 $ python3 cert_easy display --help
 usage: cert_easy display [-h] [--input INPUT] [--input-fqdn INPUT_FQDN]
-                         [--brief] [--port PORT]
+                         [--extensions] [--port PORT]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -71,7 +71,7 @@ optional arguments:
                         Certificate path.
   --input-fqdn INPUT_FQDN, -u INPUT_FQDN
                         Certificate FQDN.
-  --brief, -b           Enable brief display.
+  --extensions, -b      Display extensions and signature.
   --port PORT, -p PORT  Change HTTPs port.
 
 
@@ -115,7 +115,6 @@ python3 cert_easy verify --input ssl_test/client.pem --ca ssl_test/ca.pem
 ```bash
 # Display server certificate
 python3 cert_easy display --input-fqdn github.com
-
 ```
 
 
@@ -130,6 +129,9 @@ curl -s -o /dev/null -w "%{http_code}\n" https://localhost:8443/
 
 # Sould be a sucess (200)
 curl -s -o /dev/null -w "%{http_code}\n" https://localhost:8443/ --cacert ssl_test/ca.pem
+
+# Verify CA
+python3 cert_easy verify --input-fqdn localhost --port 8443 --ca ssl_test/ca.pem
 ```
 
 
@@ -144,6 +146,5 @@ python3 cert_easy verify --input-fqdn github.com --ca ssl/ca.pem
 openssl s_client -showcerts -connect github.com:443 </dev/null
 
 # If you don't pass root CA, it may not work...
-
 ```
 
