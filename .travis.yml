@@ -1,0 +1,14 @@
+language: python
+python:
+  - '3.4'
+  - "3.5"
+  - "3.6"
+  - "3.7"
+install:
+  - pip3 install pylint
+  - pip3 install -r src/client/requirements.txt
+script:
+  - pylint --py3k --disable=print-statement cert_easy
+  - pylint --py3k --disable=print-statement gen_ca.py
+  - pylint --py3k --disable=print-statement gen_client.py
+  - pylint --py3k --disable=print-statement simple-https-server.py

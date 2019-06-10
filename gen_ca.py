@@ -3,8 +3,9 @@
 """ Generate CA """
 
 # Standard library imports
+from __future__ import absolute_import
 from argparse import ArgumentParser
-import random
+from random import randint
 from socket import gethostname
 
 # Third party library imports
@@ -16,7 +17,7 @@ def create_ca(output_directory, common_name, validity):
 
     ca_cert = crypto.X509()
     ca_cert.set_version(2)
-    ca_cert.set_serial_number(random.randint(50000000, 100000000))
+    ca_cert.set_serial_number(randint(50000000, 100000000))
 
     ca_subj = ca_cert.get_subject()
     ca_subj.commonName = common_name

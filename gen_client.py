@@ -3,8 +3,9 @@
 """ Generate Client """
 
 # Standard library imports
+from __future__ import absolute_import
 from argparse import ArgumentParser
-import random
+from random import randint
 
 # Third party library imports
 from OpenSSL import crypto
@@ -15,7 +16,7 @@ def create_cert(ca_cert, ca_subj, ca_key, common_name, validity, output_director
 
     client_cert = crypto.X509()
     client_cert.set_version(2)
-    client_cert.set_serial_number(random.randint(50000000, 100000000))
+    client_cert.set_serial_number(randint(50000000, 100000000))
 
     client_subj = client_cert.get_subject()
     client_subj.commonName = common_name

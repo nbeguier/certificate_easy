@@ -1,21 +1,22 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 """ Simple HTTPs Server """
 
 # Standard library imports
+from __future__ import absolute_import
 from http.server import HTTPServer, SimpleHTTPRequestHandler
-import ssl
+from ssl import wrap_socket
 
-HOST = 'localhost'
+HOST = "localhost"
 PORT = 8443
-CERTIFICATE_DIRECTORY = 'ssl_test'
+CERTIFICATE_DIRECTORY = "ssl_test"
 
 httpd = HTTPServer((HOST, PORT), SimpleHTTPRequestHandler)
-httpd.socket = ssl.wrap_socket (httpd.socket,
-    certfile='%s/client.pem' % CERTIFICATE_DIRECTORY,
-    keyfile='%s/client.key' % CERTIFICATE_DIRECTORY,
+httpd.socket = wrap_socket (httpd.socket,
+    certfile="{}/client.pem".format(CERTIFICATE_DIRECTORY),
+    keyfile="{}/client.key".format(CERTIFICATE_DIRECTORY),
     server_side=True)
 
-print('https://%s:%s/' % (HOST, PORT))
+print("https://{host}:{port}/".format(host=HOST, port=PORT))
 
 httpd.serve_forever()
