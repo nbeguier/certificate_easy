@@ -13,7 +13,7 @@ from OpenSSL.crypto import load_certificate, FILETYPE_PEM
 from OpenSSL.crypto import X509Store, X509StoreContext, X509StoreContextError
 
 # Debug
-from pdb import set_trace as st
+# from pdb import set_trace as st
 
 COLORS = {
     'red': '\033[1;31m',
@@ -33,7 +33,9 @@ def color_message(message, color_name, bold=False):
         color = "{bold}{color}".format(bold=COLORS['bold'], color=COLORS[color_name])
     else:
         color = COLORS[color_name]
-    return "{color}{message}{reset_color}".format(color=color, message=message, reset_color=COLORS['native'])
+    return "{color}{message}{reset_color}".format(color=color,
+                                                  message=message,
+                                                  reset_color=COLORS['native'])
 
 def display(cert_path, fqdn=False, extensions=False, port=443):
     """ Display certificate """
@@ -46,7 +48,8 @@ def display(cert_path, fqdn=False, extensions=False, port=443):
     print(color_message("Common Name: ", "green", bold=True) + cert.get_subject().CN)
     print(color_message("Subject: ", "green", bold=True))
     for subject in cert.get_subject().get_components():
-        print(color_message("    {}: ".format(subject[0].decode("utf-8")), "bold") + subject[1].decode("utf-8"))
+        print(color_message("    {}: ".format(
+            subject[0].decode("utf-8")), "bold") + subject[1].decode("utf-8"))
 
     print(color_message("Issuer: ", "green", bold=True) + cert.get_issuer().CN)
     print(color_message("Validity: ", "bold"))
@@ -56,11 +59,15 @@ def display(cert_path, fqdn=False, extensions=False, port=443):
         print(color_message("Certificate expired", "red"))
 
     if extensions:
-        print(color_message("Signature Algorithm: ", "bold") + cert.get_signature_algorithm().decode("utf-8"))
+        print(color_message("Signature Algorithm: ", "bold") \
+            + cert.get_signature_algorithm().decode("utf-8"))
         print(color_message("X509v3 extensions: ", "bold"))
         for ext_id in range(cert.get_extension_count()):
-            print(color_message("    {}: ".format(cert.get_extension(ext_id).get_short_name().decode("utf-8")), "bold") +
-                cert.get_extension(ext_id).__str__())
+            print(color_message("    {}: ".format(cert
+                                                  .get_extension(ext_id)
+                                                  .get_short_name()
+                                                  .decode("utf-8")), "bold") +
+                  cert.get_extension(ext_id).__str__())
 
 def verify(cert_path, ca_path, fqdn=False, port=443):
     """ Verify a couple of certificate and CA """

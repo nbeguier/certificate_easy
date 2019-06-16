@@ -122,7 +122,7 @@ python3 cert_easy display --input-fqdn github.com
 
 ```bash
 # Start HTTPS Server
-python3 simple-https-server.py & 
+python3 simple_https_server.py & 
 
 # Should fail (000)
 curl -s -o /dev/null -w "%{http_code}\n" https://localhost:8443/
