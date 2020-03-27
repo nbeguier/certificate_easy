@@ -5,16 +5,12 @@ python:
   - 3.5
   - 3.6
   - 3.7
-  - 3.7-dev
+  - 3.8
 install:
   - pip3 install pylint
   - pip3 install -r requirements.txt
 script:
-  - pylint --py3k --disable=print-statement cert_easy
-  - pylint --disable=superfluous-parens cert_easy
-  - pylint --py3k gen_ca.py
+  - pylint cert_easy
   - pylint gen_ca.py
-  - pylint --py3k gen_client.py
   - pylint gen_client.py
-  - pylint --py3k --disable=print-statement simple_https_server.py
-  - pylint --disable=superfluous-parens simple_https_server.py
+  - pylint simple_https_server.py

@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
-#-*- coding: utf-8 -*-
-""" Simple HTTPs Server """
+"""
+Simple HTTPs Server
+
+Copyright 2017 Nicolas BEGUIER
+Licensed under the Apache License
+Written by Nicolas BEGUIER (nicolas_beguier@hotmail.com)
+"""
 
 # Standard library imports
-from __future__ import absolute_import
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from ssl import wrap_socket
 

@@ -1,6 +1,8 @@
 # Cert Easy
 
-[![Build Status](https://travis-ci.org/nbeguier/certificate_easy.svg?branch=master)](https://travis-ci.org/nbeguier/certificate_easy) [![Python 3.2|3.7](https://img.shields.io/badge/python-3.4|3.7-green.svg)](https://www.python.org/) [![License](https://img.shields.io/badge/Licence-Apache%202.0-blue.svg)](https://github.com/nbeguier/certificate_easy/blob/master/LICENSE)
+[![Build Status](https://travis-ci.org/nbeguier/certificate_easy.svg?branch=master)](https://travis-ci.org/nbeguier/certificate_easy) [![Python 3.4|3.8](https://img.shields.io/badge/python-3.4|3.8-green.svg)](https://www.python.org/) [![License](https://img.shields.io/github/license/nbeguier/certificate_easy?color=blue)](https://github.com/nbeguier/certificate_easy/blob/master/LICENSE)
+
+Certificate reader and creater via CLI
 
 ## Prerequisites
 
@@ -23,10 +25,11 @@ pip3 install -r requirements.txt
 ## Usage
 ```
 $ python3 gen_ca.py --help
-usage: gen_ca.py [-h] [--output OUTPUT] [--cn CN] [--validity VALIDITY]
+usage: gen_ca.py [-h] [--version] [--output OUTPUT] [--cn CN] [--validity VALIDITY]
 
 optional arguments:
   -h, --help            show this help message and exit
+  --version             show program's version number and exit
   --output OUTPUT, -o OUTPUT
                         Output directory.
   --cn CN               Common name.
@@ -36,10 +39,11 @@ optional arguments:
 
 ```
 $ python3 gen_client.py --help
-usage: gen_client.py [-h] [--output OUTPUT] [--cn CN] [--validity VALIDITY]
+usage: gen_client.py [-h] [--version] [--output OUTPUT] [--cn CN] [--validity VALIDITY]
 
 optional arguments:
   -h, --help            show this help message and exit
+  --version             show program's version number and exit
   --output OUTPUT, -o OUTPUT
                         Output directory.
   --cn CN               Common name.
@@ -50,7 +54,7 @@ optional arguments:
 
 ```
 $ python3 cert_easy --help
-usage: cert_easy [-h] {display,verify} ...
+usage: cert_easy [-h] [--version] {display,verify} ...
 
 positional arguments:
   {display,verify}  commands
@@ -59,11 +63,11 @@ positional arguments:
 
 optional arguments:
   -h, --help        show this help message and exit
+  --version         show program's version number and exit
 
 
 $ python3 cert_easy display --help
-usage: cert_easy display [-h] [--input INPUT] [--input-fqdn INPUT_FQDN]
-                         [--extensions] [--port PORT]
+usage: cert_easy display [-h] [--input INPUT] [--input-fqdn INPUT_FQDN] [--extensions] [--port PORT]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -71,13 +75,12 @@ optional arguments:
                         Certificate path.
   --input-fqdn INPUT_FQDN, -u INPUT_FQDN
                         Certificate FQDN.
-  --extensions, -b      Display extensions and signature.
+  --extensions, -e      Display extensions and signature.
   --port PORT, -p PORT  Change HTTPs port.
 
 
 $ python3 cert_easy verify --help
-usage: cert_easy verify [-h] [--input INPUT] [--ca CA]
-                        [--input-fqdn INPUT_FQDN] [--port PORT]
+usage: cert_easy verify [-h] [--input INPUT] [--ca CA] [--input-fqdn INPUT_FQDN] [--port PORT]
 
 optional arguments:
   -h, --help            show this help message and exit

@@ -1,14 +1,20 @@
 #!/usr/bin/env python3
-#-*- coding: utf-8 -*-
-""" Generate Client """
+"""
+Generate Client
+
+Copyright 2017 Nicolas BEGUIER
+Licensed under the Apache License
+Written by Nicolas BEGUIER (nicolas_beguier@hotmail.com)
+"""
 
 # Standard library imports
-from __future__ import absolute_import
 from argparse import ArgumentParser
 from random import randint
 
 # Third party library imports
 from OpenSSL import crypto
+
+VERSION = '1.0.1'
 
 def create_cert(ca_cert, ca_subj, ca_key, arguments):
     """
@@ -58,6 +64,8 @@ def create_cert(ca_cert, ca_subj, ca_key, arguments):
 
 if __name__ == "__main__":
     PARSER = ArgumentParser()
+
+    PARSER.add_argument('--version', action='version', version=VERSION)
 
     PARSER.add_argument("--output", "-o", action="store",
                         help="Output directory.",
