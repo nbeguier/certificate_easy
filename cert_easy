@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
-#-*- coding: utf-8 -*-
-""" Easy use of certificate """
+"""
+Easy use of certificate
+
+Copyright 2017 Nicolas BEGUIER
+Licensed under the Apache License
+Written by Nicolas BEGUIER (nicolas_beguier@hotmail.com)
+"""
 
 # Standard library imports
-from __future__ import absolute_import
 from argparse import ArgumentParser
 from sys import argv
 
@@ -14,6 +18,8 @@ from OpenSSL.crypto import X509Store, X509StoreContext, X509StoreContextError
 
 # Debug
 # from pdb import set_trace as st
+
+VERSION = '1.0.1'
 
 COLORS = {
     'red': '\033[1;31m',
@@ -91,6 +97,8 @@ if __name__ == "__main__":
     PARSER = ArgumentParser()
 
     SUBPARSERS = PARSER.add_subparsers(help="commands")
+
+    PARSER.add_argument('--version', action='version', version=VERSION)
 
     # A display command
     DISPLAY_PARSER = SUBPARSERS.add_parser("display", help="Display certificate.")
