@@ -19,7 +19,7 @@ from OpenSSL.crypto import X509Store, X509StoreContext, X509StoreContextError
 # Debug
 # from pdb import set_trace as st
 
-VERSION = '1.0.1'
+VERSION = '1.0.2'
 
 COLORS = {
     'red': '\033[1;31m',
@@ -93,49 +93,55 @@ def verify(cert_path, ca_path, fqdn=False, port=443):
     except X509StoreContextError as error:
         print(color_message("Verification error: ", "red", bold=True) + str(error))
 
-if __name__ == "__main__":
-    PARSER = ArgumentParser()
+def main():
+    """
+    Main function
+    """
+    if __name__ == "__main__":
+        parser = ArgumentParser()
 
-    SUBPARSERS = PARSER.add_subparsers(help="commands")
+        subparsers = parser.add_subparsers(help="commands")
 
-    PARSER.add_argument('--version', action='version', version=VERSION)
+        parser.add_argument('--version', action='version', version=VERSION)
 
-    # A display command
-    DISPLAY_PARSER = SUBPARSERS.add_parser("display", help="Display certificate.")
-    DISPLAY_PARSER.add_argument("--input", "-i", action="store",
-                                help="Certificate path.")
-    DISPLAY_PARSER.add_argument("--input-fqdn", "-u", action="store",
-                                help="Certificate FQDN.")
-    DISPLAY_PARSER.add_argument("--extensions", "-e", action="store_true",
-                                default=False, help="Display extensions and signature.")
-    DISPLAY_PARSER.add_argument("--port", "-p", action="store",
-                                default=443, help="Change HTTPs port.")
+        # A display command
+        display_parser = subparsers.add_parser("display", help="Display certificate.")
+        display_parser.add_argument("--input", "-i", action="store",
+                                    help="Certificate path.")
+        display_parser.add_argument("--input-fqdn", "-u", action="store",
+                                    help="Certificate FQDN.")
+        display_parser.add_argument("--extensions", "-e", action="store_true",
+                                    default=False, help="Display extensions and signature.")
+        display_parser.add_argument("--port", "-p", action="store",
+                                    default=443, help="Change HTTPs port.")
 
-    # An verify command
-    VERIFY_PARSER = SUBPARSERS.add_parser("verify", help="verifiy couple CA, CERTIFICATE")
-    VERIFY_PARSER.add_argument("--input", "-i", action="store", help="Certificate path.")
-    VERIFY_PARSER.add_argument("--ca", action="store", help="CA path.")
-    VERIFY_PARSER.add_argument("--input-fqdn", "-f", action="store",
-                               help="Certificate FQDN.")
-    VERIFY_PARSER.add_argument("--port", "-p", action="store", help="Change HTTPs port.",
-                               default=443)
+        # An verify command
+        verify_parser = subparsers.add_parser("verify", help="verifiy couple CA, CERTIFICATE")
+        verify_parser.add_argument("--input", "-i", action="store", help="Certificate path.")
+        verify_parser.add_argument("--ca", action="store", help="CA path.")
+        verify_parser.add_argument("--input-fqdn", "-f", action="store",
+                                   help="Certificate FQDN.")
+        verify_parser.add_argument("--port", "-p", action="store", help="Change HTTPs port.",
+                                   default=443)
 
 
-    ARGS = PARSER.parse_args()
+        args = parser.parse_args()
 
-    if len(argv) < 2:
-        PARSER.print_usage()
-    elif argv[1] == "display":
-        if ARGS.input is not None:
-            display(ARGS.input, extensions=ARGS.extensions)
-        elif ARGS.input_fqdn is not None:
-            display(ARGS.input_fqdn, fqdn=True, extensions=ARGS.extensions, port=ARGS.port)
-        else:
-            DISPLAY_PARSER.print_usage()
-    elif argv[1] == "verify":
-        if ARGS.input is not None and ARGS.ca is not None:
-            verify(ARGS.input, ARGS.ca, port=ARGS.port)
-        elif ARGS.input_fqdn is not None and ARGS.ca is not None:
-            verify(ARGS.input_fqdn, ARGS.ca, fqdn=True, port=ARGS.port)
-        else:
-            VERIFY_PARSER.print_usage()
+        if len(argv) < 2:
+            parser.print_usage()
+        elif argv[1] == "display":
+            if args.input is not None:
+                display(args.input, extensions=args.extensions)
+            elif args.input_fqdn is not None:
+                display(args.input_fqdn, fqdn=True, extensions=args.extensions, port=args.port)
+            else:
+                display_parser.print_usage()
+        elif argv[1] == "verify":
+            if args.input is not None and args.ca is not None:
+                verify(args.input, args.ca, port=args.port)
+            elif args.input_fqdn is not None and args.ca is not None:
+                verify(args.input_fqdn, args.ca, fqdn=True, port=args.port)
+            else:
+                verify_parser.print_usage()
+
+main()

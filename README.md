@@ -53,8 +53,8 @@ optional arguments:
 
 
 ```
-$ python3 cert_easy --help
-usage: cert_easy [-h] [--version] {display,verify} ...
+$ python3 cert_easy.py --help
+usage: cert_easy.py [-h] [--version] {display,verify} ...
 
 positional arguments:
   {display,verify}  commands
@@ -66,8 +66,8 @@ optional arguments:
   --version         show program's version number and exit
 
 
-$ python3 cert_easy display --help
-usage: cert_easy display [-h] [--input INPUT] [--input-fqdn INPUT_FQDN] [--extensions] [--port PORT]
+$ python3 cert_easy.py display --help
+usage: cert_easy.py display [-h] [--input INPUT] [--input-fqdn INPUT_FQDN] [--extensions] [--port PORT]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -79,8 +79,8 @@ optional arguments:
   --port PORT, -p PORT  Change HTTPs port.
 
 
-$ python3 cert_easy verify --help
-usage: cert_easy verify [-h] [--input INPUT] [--ca CA] [--input-fqdn INPUT_FQDN] [--port PORT]
+$ python3 cert_easy.py verify --help
+usage: cert_easy.py verify [-h] [--input INPUT] [--ca CA] [--input-fqdn INPUT_FQDN] [--port PORT]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -107,17 +107,17 @@ python3 gen_ca.py --output ssl_test/
 python3 gen_client.py --output ssl_test/
 
 # Display your certificate
-python3 cert_easy display --input ssl_test/client.pem
+python3 cert_easy.py display --input ssl_test/client.pem
 
 # Verify couple ca
-python3 cert_easy verify --input ssl_test/client.pem --ca ssl_test/ca.pem
+python3 cert_easy.py verify --input ssl_test/client.pem --ca ssl_test/ca.pem
 ```
 
 ### Display server certificate
 
 ```bash
 # Display server certificate
-python3 cert_easy display --input-fqdn github.com
+python3 cert_easy.py display --input-fqdn github.com
 ```
 
 
@@ -134,15 +134,15 @@ curl -s -o /dev/null -w "%{http_code}\n" https://localhost:8443/
 curl -s -o /dev/null -w "%{http_code}\n" https://localhost:8443/ --cacert ssl_test/ca.pem
 
 # Verify CA
-python3 cert_easy verify --input-fqdn localhost --port 8443 --ca ssl_test/ca.pem
+python3 cert_easy.py verify --input-fqdn localhost --port 8443 --ca ssl_test/ca.pem
 ```
 
 
-### Verify server certificate (beta)
+### Verify server certificate
 
 ```bash
 # Verify certificate with private ca (should fail)
-python3 cert_easy verify --input-fqdn github.com --ca ssl/ca.pem
+python3 cert_easy.py verify --input-fqdn github.com --ca ssl/ca.pem
 
 # Download github ca
 # Extract it in the dump
