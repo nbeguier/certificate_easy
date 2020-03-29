@@ -7,10 +7,13 @@ python:
   - 3.7
   - 3.8
 install:
-  - pip3 install pylint
+  - pip3 install -U pip
+  - pip3 install -U pylint
   - pip3 install -r requirements.txt
+  - pip3 install -U pytest pytest-mock pytest-cov
 script:
   - pylint cert_easy
   - pylint gen_ca.py
   - pylint gen_client.py
   - pylint simple_https_server.py
+  - pytest --cov cert_easy --cov-report term-missing tests/test_cert_easy.py

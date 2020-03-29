@@ -1,1 +1,3 @@
 ssl_test/
+__pycache__
+.coverage
