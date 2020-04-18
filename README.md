@@ -151,3 +151,8 @@ openssl s_client -showcerts -connect github.com:443 </dev/null
 # If you don't pass root CA, it may not work...
 ```
 
+# License
+Licensed under the [Apache License](https://github.com/nbeguier/certificate_easy/blob/master/LICENSE), Version 2.0 (the "License").
+
+# Copyright
+Copyright 2017-2020 Nicolas BEGUIER; ([nbeguier](https://beguier.eu/nicolas/) - nicolas_beguier[at]hotmail[dot]com)

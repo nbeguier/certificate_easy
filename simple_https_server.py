@@ -2,7 +2,7 @@
 """
 Simple HTTPs Server
 
-Copyright 2017 Nicolas BEGUIER
+Copyright 2017-2020 Nicolas BEGUIER
 Licensed under the Apache License
 Written by Nicolas BEGUIER (nicolas_beguier@hotmail.com)
 """
