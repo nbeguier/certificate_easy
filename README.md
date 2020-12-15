@@ -1,6 +1,6 @@
 # Cert Easy
 
-[![Build Status](https://travis-ci.org/nbeguier/certificate_easy.svg?branch=master)](https://travis-ci.org/nbeguier/certificate_easy) [![Python 3.4|3.9](https://img.shields.io/badge/python-3.4|3.9-green.svg)](https://www.python.org/) [![License](https://img.shields.io/github/license/nbeguier/certificate_easy?color=blue)](https://github.com/nbeguier/certificate_easy/blob/master/LICENSE)
+[![Build Status](https://travis-ci.org/nbeguier/certificate_easy.svg?branch=master)](https://travis-ci.org/nbeguier/certificate_easy) [![Python 3.6|3.9](https://img.shields.io/badge/python-3.6|3.9-green.svg)](https://www.python.org/) [![License](https://img.shields.io/github/license/nbeguier/certificate_easy?color=blue)](https://github.com/nbeguier/certificate_easy/blob/master/LICENSE)
 
 Certificate reader and creater via CLI
 
