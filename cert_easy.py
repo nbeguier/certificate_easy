@@ -9,17 +9,17 @@ Written by Nicolas BEGUIER (nicolas_beguier@hotmail.com)
 
 # Standard library imports
 from argparse import ArgumentParser
-from sys import argv
+import sys
 
 # Third party library imports
-from ssl import get_server_certificate
+from ssl import get_server_certificate, SSLError
 from OpenSSL.crypto import load_certificate, FILETYPE_PEM
 from OpenSSL.crypto import X509Store, X509StoreContext, X509StoreContextError
 
 # Debug
 # from pdb import set_trace as st
 
-VERSION = '1.0.2'
+VERSION = '1.0.3'
 
 COLORS = {
     'red': '\033[1;31m',
@@ -36,17 +36,19 @@ COLORS = {
 def color_message(message, color_name, bold=False):
     """ Print in a specific color """
     if bold:
-        color = "{bold}{color}".format(bold=COLORS['bold'], color=COLORS[color_name])
+        color = f"{COLORS['bold']}{COLORS[color_name]}"
     else:
         color = COLORS[color_name]
-    return "{color}{message}{reset_color}".format(color=color,
-                                                  message=message,
-                                                  reset_color=COLORS['native'])
+    return f"{color}{message}{COLORS['native']}"
 
 def display(cert_path, fqdn=False, extensions=False, port=443):
     """ Display certificate """
     if fqdn:
-        st_cert = get_server_certificate((cert_path, port))
+        try:
+            st_cert = get_server_certificate((cert_path, port))
+        except SSLError as err_msg:
+            print(f"Cert Easy can't extract server certificate: {err_msg}")
+            sys.exit(1)
     else:
         st_cert = open(cert_path, 'rt').read()
     cert = load_certificate(FILETYPE_PEM, st_cert)
@@ -127,16 +129,16 @@ def main():
 
         args = parser.parse_args()
 
-        if len(argv) < 2:
+        if len(sys.argv) < 2:
             parser.print_usage()
-        elif argv[1] == "display":
+        elif sys.argv[1] == "display":
             if args.input is not None:
                 display(args.input, extensions=args.extensions)
             elif args.input_fqdn is not None:
                 display(args.input_fqdn, fqdn=True, extensions=args.extensions, port=args.port)
             else:
                 display_parser.print_usage()
-        elif argv[1] == "verify":
+        elif sys.argv[1] == "verify":
             if args.input is not None and args.ca is not None:
                 verify(args.input, args.ca, port=args.port)
             elif args.input_fqdn is not None and args.ca is not None:
