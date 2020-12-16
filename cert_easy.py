@@ -9,6 +9,7 @@ Written by Nicolas BEGUIER (nicolas_beguier@hotmail.com)
 
 # Standard library imports
 from argparse import ArgumentParser
+from datetime import datetime
 import sys
 
 # Third party library imports
@@ -19,7 +20,7 @@ from OpenSSL.crypto import X509Store, X509StoreContext, X509StoreContextError
 # Debug
 # from pdb import set_trace as st
 
-VERSION = '1.0.3'
+VERSION = '1.1.0'
 
 COLORS = {
     'red': '\033[1;31m',
@@ -32,6 +33,10 @@ COLORS = {
     'native': '\033[m',
     'bold': '\033[1m'
 }
+
+def clean_date(date_str):
+    """ Returns the date in a human readable format """
+    return str(datetime.strptime(date_str.decode("utf-8"), "%Y%m%d%H%M%SZ"))
 
 def color_message(message, color_name, bold=False):
     """ Print in a specific color """
@@ -61,8 +66,8 @@ def display(cert_path, fqdn=False, extensions=False, port=443):
 
     print(color_message("Issuer: ", "green", bold=True) + cert.get_issuer().CN)
     print(color_message("Validity: ", "bold"))
-    print(color_message("    Not Before: ", "bold") + cert.get_notBefore().decode("utf-8"))
-    print(color_message("    Not After: ", "bold") + cert.get_notAfter().decode("utf-8"))
+    print(color_message("    Not Before: ", "bold") + clean_date(cert.get_notBefore()))
+    print(color_message("    Not After: ", "bold") + clean_date(cert.get_notAfter()))
     if cert.has_expired():
         print(color_message("Certificate expired", "red"))
 

@@ -28,8 +28,8 @@ def test_display_cert_path(capsys):
     assert err == ''
     assert 'Common Name: \x1b[mlocalhost\n' in out
     assert 'CN: \x1b[mlocalhost\n' in out
-    assert 'Not Before: \x1b[m20200329134614Z\n' in out
-    assert 'Not After: \x1b[m20511206153253Z\n' in out
+    assert 'Not Before: \x1b[m2020-03-29 13:46:14\n' in out
+    assert 'Not After: \x1b[m2051-12-06 15:32:53\n' in out
     assert 'Signature Algorithm' in out
     cert_easy.display('ssl/client_expired.pem')
     out, err = capsys.readouterr()
