@@ -20,7 +20,7 @@ from OpenSSL.crypto import X509Store, X509StoreContext, X509StoreContextError
 # Debug
 # from pdb import set_trace as st
 
-VERSION = '1.1.0'
+VERSION = '1.1.1'
 
 COLORS = {
     'red': '\033[1;31m',
@@ -53,6 +53,9 @@ def display(cert_path, fqdn=False, extensions=False, port=443):
             st_cert = get_server_certificate((cert_path, port))
         except SSLError as err_msg:
             print(f"Cert Easy can't extract server certificate: {err_msg}")
+            sys.exit(1)
+        except ConnectionRefusedError as err_msg:
+            print(f"Cert Easy can't reach {cert_path}: {err_msg}")
             sys.exit(1)
     else:
         st_cert = open(cert_path, 'rt').read()
