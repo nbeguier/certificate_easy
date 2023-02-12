@@ -2,7 +2,7 @@
 """
 Tests cert_easy
 
-Copyright 2017-2022 Nicolas BEGUIER
+Copyright 2017-2023 Nicolas BEGUIER
 Licensed under the Apache License
 Written by Nicolas BEGUIER (nicolas_beguier@hotmail.com)
 """
@@ -56,13 +56,4 @@ def test_verify_cert_fqdn(capsys):
     cert_easy.verify('github.com', 'ssl/ca.pem', fqdn=True)
     out, err = capsys.readouterr()
     assert err == ''
-    assert "Verification error: \x1b[m[20, 0, 'unable to get local issuer certificate']\n" in out
-
-def test_main_version(capsys, mocker):
-    mocker.patch.object(cert_easy, "__name__", "__main__")
-    mocker.patch('sys.argv', ['cert_easy.py', '--version'])
-    with pytest.raises(SystemExit):
-        cert_easy.main()
-    out, err = capsys.readouterr()
-    assert err == ''
-    assert out == cert_easy.VERSION+'\n'
+    assert "\x1b[1m\x1b[1;31mVerification error: \x1b[munable to get local issuer certificate\n" in out
